@@ -20,7 +20,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 4040584431725059667, guid: 9a5c6b5672d0ffb46b24e3bbb484221e, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: fc3d168f9b55e324dbe733a98649670e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -46,7 +46,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 4040584431725059667, guid: 9a5c6b5672d0ffb46b24e3bbb484221e, type: 3}
+  m_Motion: {fileID: -6206981513316247533, guid: c346a9e2503cda64ba4698db6aa5e707, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -59,7 +59,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Attack_Handle
+  m_Name: Attack_Hand
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -133,7 +133,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle
+  m_Name: Idle_Hand
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -175,7 +175,7 @@ AnimatorStateMachine:
     m_Position: {x: 340, y: 440, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8363742632618811973}
-    m_Position: {x: 610, y: 220, z: 0}
+    m_Position: {x: 590, y: 330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1497522780147658113}
     m_Position: {x: 610, y: 120, z: 0}

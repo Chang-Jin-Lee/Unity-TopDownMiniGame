@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FxTemporaire
   - Weapon
+  - Ground
   layers:
   - Default
   - TransparentFX

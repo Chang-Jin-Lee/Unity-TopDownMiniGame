@@ -2,21 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IAbility
 {
+    [SerializeField] private AbilityData abilityTemplate;
+    
     public Animator animator;
     public GameObject CharacterModel;
-
-    // About Animation
-
-    public string anim_cur = "Idle";
+    public Weapon gunRef;
+    
+    // Weapon에게 전달할 destination Position
+    private Vector3 mousePosition = Vector3.zero;
+    
+    // About Ability
+    public float health = 100.0f;
     public float moveSpeed = 5.0f;
     public float moveWalkSpeed = 5.0f;
     public float moveDashSpeed = 10.0f;
+    
+    public float Health => health;
+    public float MoveWalkSpeed => moveWalkSpeed;
+    public float MoveDashSpeed => moveDashSpeed;
+
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Death();
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        health += amount;
+    }
+    
+    // About Animation
+    public string anim_cur = "Idle";
+    
     enum eAnimationState
     {
         idle_hand,
@@ -41,11 +72,19 @@ public class Player : MonoBehaviour
     eCombatState combat_state_cur;
     public GameObject[] Attack_RifleFXs;
     //public SpriteRenderer sr;
-
-
+    
+    
     void Start()
     {
         combatStart();
+        SetAbilities();
+    }
+
+    public void SetAbilities()
+    {
+        moveWalkSpeed = abilityTemplate.moveWalkSpeed;
+        moveDashSpeed = abilityTemplate.moveDashSpeed;
+        health = abilityTemplate.health;
     }
 
     void Update()
@@ -60,7 +99,7 @@ public class Player : MonoBehaviour
     }
     void Input_Update()
     {
-        if (anim_cur == "Attack") // 공격하는 동안에는 공격만하기, 움직일 수는 있음
+        if (anim_cur.Contains("Attack")) // 공격하는 동안에는 공격만하기, 움직일 수는 있음
         {
             WASDmovement();
             return;
@@ -80,22 +119,22 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 state_cur = eAnimationState.dash;
-                moveSpeed = moveDashSpeed;
+                moveSpeed = MoveDashSpeed;
             }
             else
             {
                 state_cur = eAnimationState.walk;
-                moveSpeed = moveWalkSpeed;
+                moveSpeed = MoveWalkSpeed;
             }
 
             WASDmovement();
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
                 state_cur = GetCombatState();
             }
         }
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButton(0))
         {
             state_cur = GetCombatState();
         }
@@ -148,7 +187,7 @@ public class Player : MonoBehaviour
                 return eAnimationState.idle_rifle;
         }
 
-        return eAnimationState.attack_hand;
+        return eAnimationState.idle_hand;
     }
 
     public void AdjustState()
@@ -156,7 +195,7 @@ public class Player : MonoBehaviour
         switch (state_cur)
         {
             case eAnimationState.idle_hand:
-                SetAnimation("Idle");
+                SetAnimation("Idle_Hand");
                 break;
             case eAnimationState.walk:
                 SetAnimation("Walk");
@@ -178,15 +217,19 @@ public class Player : MonoBehaviour
 
     void Attack_Hand()
     {
-        SetAnimation("Attack_Hand", "Idle");
+        SetAnimation("Attack_Hand", "Idle_Hand");
     }
     void Attack_Rifle()
     {
-        SetAnimation("Attack_Rifle", "Attack_Idle");
+        SetAnimation("Attack_Rifle", "Idle_Rifle");
+        
+        gunRef.Shoot(mousePosition);
+        
+        Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
+        
         GameObject AttackFX = Attack_RifleFXs[Random.Range(0, Attack_RifleFXs.Length)];
         Instantiate(AttackFX, transform.position + CharacterModel.transform.forward * 2, transform.rotation);
     }
-
 
     void SetAnimation(string anim, string next = "")
     {
@@ -211,9 +254,10 @@ public class Player : MonoBehaviour
     {
         UnityEngine.RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (true == (Physics.Raycast(ray.origin, ray.direction * 1000, out hit)))
+        if (Physics.Raycast(ray.origin, ray.direction * 1000, out hit))
         {
             //print(hit.transform.gameObject.name);
+            mousePosition = hit.point;
             CharacterModel.transform.LookAt(hit.point);   //특정 위치 바라보기
         }
     }
@@ -221,12 +265,12 @@ public class Player : MonoBehaviour
     public void EquipWeapon(GameObject Gunobj)
     {
         GameObject obj = Instantiate(Gunobj);
-
+        gunRef = obj.GetComponent<Weapon>();
+        obj.GetComponent<BoxCollider>().enabled = false;
         Transform targetTransform = GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == "LoweArm.R");
         obj.transform.SetParent(targetTransform, false);
-        obj.transform.localPosition = new Vector3(-0.162f, -0.0320000015f, -0.0280000009f);
-        obj.transform.localRotation = new Quaternion(0.493531883f, 0.425556391f, -0.529411912f, 0.543186128f);
-        obj.GetComponent<BoxCollider>().enabled = false;
+        obj.transform.localPosition = new Vector3(-0.188999996f,-0.0250000004f,0.00499999989f);
+        obj.transform.localRotation = new Quaternion(0.61122942f,0.479516983f,-0.403191835f,0.483630598f);
         combat_state_cur = eCombatState.rifle;
         print("Weapon Spawn");
     }
@@ -235,13 +279,15 @@ public class Player : MonoBehaviour
     {
         combat_state_cur = eCombatState.unArmed;
         Transform targetTransform = GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name.Contains("Weapon"));
-
+        gunRef = null;
         if (targetTransform)
         {
-            targetTransform.SetParent(null, false);
-            targetTransform.localPosition = transform.position + CharacterModel.transform.forward + transform.up * 2;
-            targetTransform.localRotation = new Quaternion(-0.707106829f, 0f, 0f, 0.707106829f);
             targetTransform.GetComponent<BoxCollider>().enabled = true;
+            targetTransform.SetParent(null, false);
+            targetTransform.position = transform.position + CharacterModel.transform.forward + transform.up;
+            targetTransform.rotation = Quaternion.identity;
+            //targetTransform.localPosition = transform.position + CharacterModel.transform.forward + transform.up * 2;
+            //targetTransform.localRotation = new Quaternion(-0.707106829f, 0f, 0f, 0.707106829f);
             //SetCollisionEnableNext(targetTransform);
         }
     }
