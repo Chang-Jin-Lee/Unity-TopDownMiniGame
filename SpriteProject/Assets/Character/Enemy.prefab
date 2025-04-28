@@ -95,7 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b92d4b728cee5449f8665d39f713bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityTemplate: {fileID: 11400000, guid: 4de02de781ef5244e9af5eb53649cada, type: 2}
+  abilityTemplatePath: WeaponAbiliyData
+  abilityTemplate: {fileID: 11400000, guid: 3b774e94ceab99c4caa395a5fae6ed79, type: 2}
   health: 100
   moveSpeed: 5
   moveWalkSpeed: 5

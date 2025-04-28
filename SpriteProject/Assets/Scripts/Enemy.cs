@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IAbility
 {
-    [SerializeField] private AbilityData abilityTemplate;
+    [SerializeField] public AbilityData abilityTemplate;
     
     // About Ability
     public float health = 100.0f;

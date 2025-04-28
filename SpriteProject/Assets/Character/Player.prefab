@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef740930516ef849b5c39c6d4d79eb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityTemplate: {fileID: 11400000, guid: f2fddaaba6bff5545b6a516e8bde65d4, type: 2}
+  abilityTemplatePath: WeaponAbiliyData
+  abilityTemplate: {fileID: 11400000, guid: a1bb7f7a16b39744c84c0ce990c291ea, type: 2}
   animator: {fileID: 8623165538486184102}
   CharacterModel: {fileID: 3026523569478068326}
   gunRef: {fileID: 0}

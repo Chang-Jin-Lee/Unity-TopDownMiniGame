@@ -129,7 +129,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: -8336516725409186462, guid: 4b3d304c09aa72b4d90d9e31bf837cf5, type: 3}
   bulletSpawnPoint: {fileID: 952391325806254530}
-  weaponAbiliyData: {fileID: 11400000, guid: 79414c9e3ca05d340a31286782d7d793, type: 2}
+  abilityTemplatePath: WeaponAbiliyData
+  weaponAbiliyData: {fileID: 11400000, guid: c0a9379ac0b1d744790e5c7e0acf9041, type: 2}
+  fireRate: 1
 --- !u!1001 &950657513707610166
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,21 +15,20 @@ public class CameraController : MonoBehaviour
     public float fPitch = 30.0f;
     public float fYaw = 0.0f;
 
-    float minimumX = -360F;
-    float maximumX = 360F;
-    float minimumY = -0F;   // fPitch max
-    float maximumY = 90F;
-    float minimumZ = 1F;    // fDistance max
-    float maximumZ = 30F;
-
+    //float minimumX = -360F;
+    //float maximumX = 360F;
+    //float minimumY = -0F;   // fPitch max
+    //float maximumY = 90F;
+    //float minimumZ = 1F;    // fDistance max
+    //float maximumZ = 30F;
 
     private float fVelocity = 0.0f;
     float fDistance_cur;
     float fSmoothTime = 0.1F;   // smooth, smaller is faster.
 
-    private float angleVelocity = 0.0f;
-    private float angularSmoothTime = 0.2f;
-    private float angularMaxSpeed = 15.0f;
+    //private float angleVelocity = 0.0f;
+    //private float angularSmoothTime = 0.2f;
+    //private float angularMaxSpeed = 15.0f;
 
     // about move
     public float movespeed = 50.0f;

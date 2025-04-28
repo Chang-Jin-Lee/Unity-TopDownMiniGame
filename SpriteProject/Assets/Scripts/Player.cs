@@ -7,7 +7,8 @@ using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour, IAbility
 {
-    [SerializeField] private AbilityData abilityTemplate;
+    //[SerializeField] private string abilityTemplatePath = "Player_Midori_Ability_Data";
+    [SerializeField] public AbilityData abilityTemplate;
     
     public Animator animator;
     public GameObject CharacterModel;
@@ -26,6 +27,9 @@ public class Player : MonoBehaviour, IAbility
     public float MoveWalkSpeed => moveWalkSpeed;
     public float MoveDashSpeed => moveDashSpeed;
 
+    // About Weapon
+    private float lastFireTime = 0f; // 마지막 발사 시각 저장
+
     public void Death()
     {
         Destroy(gameObject);
@@ -39,7 +43,6 @@ public class Player : MonoBehaviour, IAbility
             Death();
         }
     }
-
     public void Heal(float amount)
     {
         health += amount;
@@ -72,8 +75,6 @@ public class Player : MonoBehaviour, IAbility
     eCombatState combat_state_cur;
     public GameObject[] Attack_RifleFXs;
     //public SpriteRenderer sr;
-    
-    
     void Start()
     {
         combatStart();
@@ -82,6 +83,7 @@ public class Player : MonoBehaviour, IAbility
 
     public void SetAbilities()
     {
+        //abilityTemplate = Resources.Load<AbilityData>(abilityTemplatePath);
         moveWalkSpeed = abilityTemplate.moveWalkSpeed;
         moveDashSpeed = abilityTemplate.moveDashSpeed;
         health = abilityTemplate.health;
@@ -197,6 +199,9 @@ public class Player : MonoBehaviour, IAbility
             case eAnimationState.idle_hand:
                 SetAnimation("Idle_Hand");
                 break;
+            case eAnimationState.idle_rifle:
+                SetAnimation("Idle_Rifle");
+                break;
             case eAnimationState.walk:
                 SetAnimation("Walk");
                 break;
@@ -219,12 +224,17 @@ public class Player : MonoBehaviour, IAbility
     {
         SetAnimation("Attack_Hand", "Idle_Hand");
     }
+
     void Attack_Rifle()
     {
         SetAnimation("Attack_Rifle", "Idle_Rifle");
-        
-        gunRef.Shoot(mousePosition);
-        
+
+        if (Time.time - lastFireTime > 1f / gunRef.fireRate)
+        {
+            gunRef.Shoot(mousePosition);
+            lastFireTime = Time.time;
+        }
+
         Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
         
         GameObject AttackFX = Attack_RifleFXs[Random.Range(0, Attack_RifleFXs.Length)];
@@ -254,7 +264,8 @@ public class Player : MonoBehaviour, IAbility
     {
         UnityEngine.RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray.origin, ray.direction * 1000, out hit))
+        int layerMask = ~(1 << LayerMask.NameToLayer("Bullet")); // Bullet 레이어만 제외
+        if (Physics.Raycast(ray.origin, ray.direction, out hit, 500.0f, layerMask))
         {
             //print(hit.transform.gameObject.name);
             mousePosition = hit.point;
@@ -265,14 +276,27 @@ public class Player : MonoBehaviour, IAbility
     public void EquipWeapon(GameObject Gunobj)
     {
         GameObject obj = Instantiate(Gunobj);
-        gunRef = obj.GetComponent<Weapon>();
+        obj.transform.position = Vector3.zero; // 위치 초기화
+        obj.transform.rotation = Quaternion.identity; // 회전 초기화
         obj.GetComponent<BoxCollider>().enabled = false;
+        gunRef = obj.GetComponent<Weapon>();
+        StartCoroutine(DelayedEquip(obj));
+        //print("Weapon Spawn");
+    }
+    private IEnumerator DelayedEquip(GameObject obj)
+    {
         Transform targetTransform = GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == "LoweArm.R");
         obj.transform.SetParent(targetTransform, false);
-        obj.transform.localPosition = new Vector3(-0.188999996f,-0.0250000004f,0.00499999989f);
-        obj.transform.localRotation = new Quaternion(0.61122942f,0.479516983f,-0.403191835f,0.483630598f);
+
+        // 확실하게 Parent 설정 완료될 때까지 기다린다
+        while (obj.transform.parent != targetTransform)
+        {
+            yield return null;
+        }
+
+        obj.transform.localPosition = new Vector3(-0.188999996f, -0.0250000004f, 0.00499999989f);
+        obj.transform.localRotation = new Quaternion(0.61122942f, 0.479516983f, -0.403191835f, 0.483630598f);
         combat_state_cur = eCombatState.rifle;
-        print("Weapon Spawn");
     }
 
     void DetachWeapon()
