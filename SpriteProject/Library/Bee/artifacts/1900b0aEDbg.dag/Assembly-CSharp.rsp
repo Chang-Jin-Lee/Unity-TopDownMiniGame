@@ -363,7 +363,7 @@
 "Assets/Scripts/CameraController.cs"
 "Assets/Scripts/Enemy.cs"
 "Assets/Scripts/EnemySpawner.cs"
-"Assets/Scripts/GameManager.cs"
+"Assets/Scripts/GameState.cs"
 "Assets/Scripts/Interface/AbilityInterface.cs"
 "Assets/Scripts/Player.cs"
 "Assets/Scripts/test.cs"

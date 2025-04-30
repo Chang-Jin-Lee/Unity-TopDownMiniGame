@@ -9,20 +9,20 @@ public class Player : MonoBehaviour, IAbility
 {
     //[SerializeField] private string abilityTemplatePath = "Player_Midori_Ability_Data";
     [SerializeField] public AbilityData abilityTemplate;
-    
+
     public Animator animator;
     public GameObject CharacterModel;
     public Weapon gunRef;
-    
+
     // Weapon에게 전달할 destination Position
     private Vector3 mousePosition = Vector3.zero;
-    
+
     // About Ability
     public float health = 100.0f;
     public float moveSpeed = 5.0f;
     public float moveWalkSpeed = 5.0f;
     public float moveDashSpeed = 10.0f;
-    
+
     public float Health => health;
     public float MoveWalkSpeed => moveWalkSpeed;
     public float MoveDashSpeed => moveDashSpeed;
@@ -47,10 +47,10 @@ public class Player : MonoBehaviour, IAbility
     {
         health += amount;
     }
-    
+
     // About Animation
     public string anim_cur = "Idle";
-    
+
     enum eAnimationState
     {
         idle_hand,
@@ -99,6 +99,7 @@ public class Player : MonoBehaviour, IAbility
     {
         RayCastMousePosition();
     }
+
     void Input_Update()
     {
         if (anim_cur.Contains("Attack")) // 공격하는 동안에는 공격만하기, 움직일 수는 있음
@@ -236,9 +237,18 @@ public class Player : MonoBehaviour, IAbility
         }
 
         Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
-        
+
         GameObject AttackFX = Attack_RifleFXs[Random.Range(0, Attack_RifleFXs.Length)];
-        Instantiate(AttackFX, transform.position + CharacterModel.transform.forward * 2, transform.rotation);
+        if (gunRef)
+        {
+            Vector3 gunspawnPosition = gunRef.GetSpawnPoint;
+            AttackFX.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // change its local scale in x y z format
+            Instantiate(AttackFX, gunspawnPosition, transform.rotation);
+        }
+        else
+        {
+            Instantiate(AttackFX, transform.position + CharacterModel.transform.forward * 2, transform.rotation);
+        }
     }
 
     void SetAnimation(string anim, string next = "")
@@ -269,7 +279,8 @@ public class Player : MonoBehaviour, IAbility
         {
             //print(hit.transform.gameObject.name);
             mousePosition = hit.point;
-            CharacterModel.transform.LookAt(hit.point);   //특정 위치 바라보기
+            Vector3 xzPosition = new Vector3(mousePosition.x, 0, mousePosition.z);
+            CharacterModel.transform.LookAt(xzPosition);   //특정 위치 바라보기
         }
     }
 

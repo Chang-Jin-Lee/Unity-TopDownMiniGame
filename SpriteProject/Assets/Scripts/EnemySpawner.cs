@@ -9,10 +9,16 @@ public class EnemySpawner : MonoBehaviour
     public float range = 40.0f;
     public int repeatCount = 2;
     public int maxCount = 100;
+
+    [SerializeField] private GameState gameState;
+
+    private void Awake()
+    {
+        gameState = GameObject.Find("GameState").GetComponent<GameState>();
+    }
     void Start()
     {
         InvokeRepeating("SpawnEnemy", 2f, 1f);
-
         //OnDrawGizmos();
     }
 
@@ -28,6 +34,8 @@ public class EnemySpawner : MonoBehaviour
                 Vector3 randomDir = new Vector3(dir.x, 1, dir.y);
                 GameObject obj = Instantiate(enemyPrefab, randomDir, Quaternion.identity);
                 enemies.Add(obj);
+                gameState.EnemyCount += i;
+                print(gameState.EnemyCount);
             }
         }
     }

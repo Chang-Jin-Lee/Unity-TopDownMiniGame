@@ -8,10 +8,11 @@ public class Weapon : MonoBehaviour, IWeaponAbility
     private Rigidbody rb;
     [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private GameObject bulletSpawnPoint;
-
     [SerializeField] private WeaponAbiliyData weaponAbiliyData;
 
     public float fireRate = 1.0f;
+
+    public Vector3 GetSpawnPoint => bulletSpawnPoint.transform.position;
 
     void Start()
     {
