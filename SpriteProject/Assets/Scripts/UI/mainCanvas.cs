@@ -126,7 +126,6 @@ public class mainCanvas : MonoSingleton<mainCanvas>
                 PlayScene.SetActive(true);
                 break;
             case eSceneState.EndScene:
-                Time.timeScale = 1f;
                 EndScene.SetActive(true);
                 break;
             default:
