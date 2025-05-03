@@ -6,7 +6,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class mainCanvas : MonoSingleton<mainCanvas>
+[System.Serializable]
+public class Live2DStateGroup
+{
+    public GameObject[] live2DAnimations = new GameObject[(int)eLive2DState.Max];
+}
+
+public class MainCanvas : MonoSingleton<MainCanvas>
 {
     [SerializeField] private GameObject MenuScene;
     [SerializeField] private GameObject PlayScene;
@@ -15,15 +21,14 @@ public class mainCanvas : MonoSingleton<mainCanvas>
 
     [SerializeField] private GameState gameState;
     private TextMeshProUGUI RemainEnemyText;
+    private TextMeshProUGUI RemainTimeText;
 
-    public enum eSceneState
-    {
-        MenuScene,
-        PlayScene,
-        EndScene
-    }
-    public eSceneState curSceneState;
-
+    [SerializeField] private GameObject MidoriLive2D;
+    [SerializeField] private GameObject MomoiLive2D;
+    
+    [SerializeField]
+    private Live2DStateGroup[] live2DGroups = new Live2DStateGroup[(int)eCharacterState.Max];
+    
     private void Start()
     {
         Initialize_MenuScene();
@@ -31,17 +36,23 @@ public class mainCanvas : MonoSingleton<mainCanvas>
         Initialize_EndScene();
         Initialize_OptionMenu();
         OnVisibleUI(eSceneState.MenuScene);
+        ShowLive2D(gameState.curCharacterState, eLive2DState.Start);
     }
 
     #region InitializeUI
     void Initialize_MenuScene()
     {
-        Transform startButtonObj = MenuScene.transform.Find("StartButton");
-        startButtonObj.GetComponent<Button>().onClick.AddListener(() => ChangeScene(eSceneState.PlayScene));
-        Transform OptionButtonObj = MenuScene.transform.Find("OptionButton");
-        OptionButtonObj.GetComponent<Button>().onClick.AddListener(() => ShowOption());
-        Transform ExitButtonObj = MenuScene.transform.Find("ExitButton");
-        ExitButtonObj.GetComponent<Button>().onClick.AddListener(() => ShutDown());
+        Transform startButton_MenuSceneObj = MenuScene.transform.Find("StartButton");
+        startButton_MenuSceneObj.GetComponent<Button>().onClick.AddListener(() => ChangeScene(eSceneState.PlayScene));
+        Transform OptionButton_MenuSceneObj = MenuScene.transform.Find("OptionButton");
+        OptionButton_MenuSceneObj.GetComponent<Button>().onClick.AddListener(() => ShowOption());
+        Transform ExitButton_MenuSceneObj = MenuScene.transform.Find("ExitButton");
+        ExitButton_MenuSceneObj.GetComponent<Button>().onClick.AddListener(() => ShutDown());
+        
+        Transform MidoriButton_MenuSceneObj = MenuScene.transform.Find("MidoriButton");
+        MidoriButton_MenuSceneObj.GetComponent<Button>().onClick.AddListener(() => CharacterSelected(eCharacterState.Midori));
+        Transform MomoiButton_MenuSceneObj = MenuScene.transform.Find("MomoiButton");
+        MomoiButton_MenuSceneObj.GetComponent<Button>().onClick.AddListener(() => CharacterSelected(eCharacterState.Momoi));
     }
     
     void Initialize_PlayScene()
@@ -52,7 +63,12 @@ public class mainCanvas : MonoSingleton<mainCanvas>
         Transform RemainEnemyText_PlaySceneObj = PlayScene.transform.Find("TopUI").transform.Find("TotalEnemyText");
         RemainEnemyText = RemainEnemyText_PlaySceneObj.GetComponent<TextMeshProUGUI>();
         RemainEnemyText.SetText("");
-        gameState.UIEnemyCount += SetEnemyCountUI;
+        gameState.OnEnemyCount += SetEnemyCountUI;
+        
+        Transform RemainTimeText_PlaySceneObj = PlayScene.transform.Find("TopUI").transform.Find("RemainTimeText");
+        RemainTimeText = RemainTimeText_PlaySceneObj.GetComponent<TextMeshProUGUI>();
+        RemainTimeText.SetText("");
+        gameState.OnTimeCount += SetTimeCountUI;
     }
     
     void Initialize_EndScene()
@@ -78,20 +94,10 @@ public class mainCanvas : MonoSingleton<mainCanvas>
     {
         RemainEnemyText.text = $"{obj}";
     }
-
-    string GetSceneStateToString(eSceneState state)
+    
+    private void SetTimeCountUI(int obj)
     {
-        switch (state)
-        {
-            case eSceneState.MenuScene:
-                return "MenuScene";
-            case eSceneState.PlayScene:
-                return "PlayScene";
-            case eSceneState.EndScene:
-                return "EndScene";
-            default:
-                return "default";
-        }
+        RemainTimeText.text = $"{obj}";
     }
 
     GameObject GetSceneStateToGameObject(eSceneState state)
@@ -132,7 +138,7 @@ public class mainCanvas : MonoSingleton<mainCanvas>
                 break;
         }
 
-        curSceneState = state;
+        gameState.SetGameState(state);
     }
 
     void AddScore(int value)
@@ -141,22 +147,22 @@ public class mainCanvas : MonoSingleton<mainCanvas>
         scoreText.text = value.ToString();
     }
 
-    void ChangeScene(eSceneState state)
+    public void ChangeScene(eSceneState state)
     {
         OnVisibleUI(state);
-        SceneManager.LoadScene(GetSceneStateToString(state));
+        SceneManager.LoadScene(GameState.GetSceneStateToString(state));
     }
 
     void ShowOption()
     {
-        GetSceneStateToGameObject(curSceneState).SetActive(false);
+        GetSceneStateToGameObject(gameState.curSceneState).SetActive(false);
         Time.timeScale = 0f;
         OptionMenu.SetActive(true);
     }
 
     void HideOption()
     {
-        GetSceneStateToGameObject(curSceneState).SetActive(true);
+        GetSceneStateToGameObject(gameState.curSceneState).SetActive(true);
         Time.timeScale = 1f;
         OptionMenu.SetActive(false);
     }
@@ -165,5 +171,38 @@ public class mainCanvas : MonoSingleton<mainCanvas>
     {
         print("Quit");
         Application.Quit();
+    }
+
+    void CharacterSelected(eCharacterState newState)
+    {
+        switch (newState)
+        {
+            case eCharacterState.Midori:
+                gameState.SetCharacterState(eCharacterState.Midori);
+                ShowLive2D(eCharacterState.Midori, eLive2DState.Start);
+                break;
+            case eCharacterState.Momoi:
+                gameState.SetCharacterState(eCharacterState.Momoi);
+                ShowLive2D(eCharacterState.Momoi, eLive2DState.Start);
+                break;
+            default:
+                break;
+        }
+    }
+
+    void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)
+    {
+        foreach (var live2DGroup in live2DGroups)
+        {
+            if(live2DGroup == null) continue;
+            foreach (var animation in live2DGroup.live2DAnimations)
+            {
+                if (animation != null)
+                {
+                    animation.SetActive(false);
+                }
+            }
+        }
+        live2DGroups[(int)characterState].live2DAnimations[(int)live2DState].SetActive(true);
     }
 }
