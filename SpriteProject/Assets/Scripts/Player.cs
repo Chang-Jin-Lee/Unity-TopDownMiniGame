@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class Player : MonoBehaviour, IAbility
+public class Player : MonoBehaviour, IPlayerAbility
 {
     //[SerializeField] private string abilityTemplatePath = "Player_Midori_Ability_Data";
-    [SerializeField] public AbilityData abilityTemplate;
+    [FormerlySerializedAs("PlayerAbilityTemplate")] [SerializeField] public PlayerAbilityData playerAbilityTemplate;
 
     [FormerlySerializedAs("Weapon")] public Weapon gunRef;
     [FormerlySerializedAs("CharacterModel")] public GameObject curCharacterModel;
     [FormerlySerializedAs("Animation")] public Animator animatorController;
-
+    // About Animation
+    public string anim_cur = "Idle";
+    
     // Weapon에게 전달할 destination Position
     private Vector3 mousePosition = Vector3.zero;
 
@@ -47,9 +49,6 @@ public class Player : MonoBehaviour, IAbility
         health += amount;
     }
 
-    // About Animation
-    public string anim_cur = "Idle";
-
     enum eAnimationState
     {
         idle_hand,
@@ -61,7 +60,6 @@ public class Player : MonoBehaviour, IAbility
         hit,
         die,
     };
-
     eAnimationState state_cur;
 
     /* About Combat 
@@ -72,8 +70,6 @@ public class Player : MonoBehaviour, IAbility
         rifle,
     }
     eCombatState combat_state_cur;
-    public GameObject[] Attack_RifleFXs;
-    //public SpriteRenderer sr;
     void Start()
     {
         combatStart();
@@ -83,9 +79,9 @@ public class Player : MonoBehaviour, IAbility
     public void SetAbilities()
     {
         //abilityTemplate = Resources.Load<AbilityData>(abilityTemplatePath);
-        moveWalkSpeed = abilityTemplate.moveWalkSpeed;
-        moveDashSpeed = abilityTemplate.moveDashSpeed;
-        health = abilityTemplate.health;
+        moveWalkSpeed = playerAbilityTemplate.moveWalkSpeed;
+        moveDashSpeed = playerAbilityTemplate.moveDashSpeed;
+        health = playerAbilityTemplate.health;
     }
 
     void Update()
@@ -235,19 +231,7 @@ public class Player : MonoBehaviour, IAbility
             lastFireTime = Time.time;
         }
 
-        Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
-
-        GameObject AttackFX = Attack_RifleFXs[Random.Range(0, Attack_RifleFXs.Length)];
-        if (gunRef)
-        {
-            Vector3 gunspawnPosition = gunRef.GetSpawnPoint;
-            AttackFX.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // change its local scale in x y z format
-            Instantiate(AttackFX, gunspawnPosition, transform.rotation);
-        }
-        else
-        {
-            Instantiate(AttackFX, transform.position + curCharacterModel.transform.forward * 2, transform.rotation);
-        }
+        //Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
     }
 
     void SetAnimation(string anim, string next = "")
