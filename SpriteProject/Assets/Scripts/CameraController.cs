@@ -7,28 +7,16 @@ public class CameraController : MonoBehaviour
    //---------------------------------------------
     public Transform _cameraTransform;
     public Transform _targetTransform;
-    public Rigidbody _targetrb;
 
-    public Vector3 targetOffset = new Vector3(0, 1, 0);    //À§Ä¡
+    public Vector3 targetOffset = new Vector3(0, 1, 0);    //ï¿½ï¿½Ä¡
 
-    public float fDistance = 15.0f;          //Editor ¿ì¼± ÂüÁ¶
+    public float fDistance = 15.0f;          //Editor ï¿½ì¼± ï¿½ï¿½ï¿½ï¿½
     public float fPitch = 30.0f;
     public float fYaw = 0.0f;
-
-    //float minimumX = -360F;
-    //float maximumX = 360F;
-    //float minimumY = -0F;   // fPitch max
-    //float maximumY = 90F;
-    //float minimumZ = 1F;    // fDistance max
-    //float maximumZ = 30F;
-
+    
     private float fVelocity = 0.0f;
     float fDistance_cur;
     float fSmoothTime = 0.1F;   // smooth, smaller is faster.
-
-    //private float angleVelocity = 0.0f;
-    //private float angularSmoothTime = 0.2f;
-    //private float angularMaxSpeed = 15.0f;
 
     // about move
     public float movespeed = 50.0f;
@@ -36,15 +24,6 @@ public class CameraController : MonoBehaviour
     float v_move = 0;
     Vector3 movement;
     Vector3 clickTargetPos = new Vector3(0,0,0);
-
-    //---------------------------------------------
-    //enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
-    //RotationAxes axes = RotationAxes.MouseXAndY;
-    //float sensitivityX = 15F;
-    //float sensitivityY = 15F;
-    //float sensitivityZ = 1.5F;
-
-    //float rotationY = 0F;
 
     //---------------------------------------------
     void Awake()
@@ -56,8 +35,6 @@ public class CameraController : MonoBehaviour
             Debug.Log("Please assign a camera to the CameraController script.");
             enabled = false;
         }
-
-        //_targetTransform = transform;		
 
         if (!_targetTransform)
         {
@@ -71,82 +48,15 @@ public class CameraController : MonoBehaviour
         clickTargetPos = _targetTransform.transform.position;
     }
 
-    void Update()
-    {
-
-        //if (Input.GetMouseButton(1)) //¿ìÅ¬¸¯À¸·Î Ä«¸Þ¶ó Á¶Á¤
-        //{
-        //    fYaw += Input.GetAxis("Mouse X");
-        //    //fYaw = Mathf.Clamp (fYaw, minimumX, maximumX);			
-        //    fPitch -= Input.GetAxis("Mouse Y");
-        //    fPitch = Mathf.Clamp(fPitch, minimumY, maximumY);
-        //}
-
-        //fDistance -= Input.GetAxis("Mouse ScrollWheel");
-        //fDistance = Mathf.Clamp(fDistance, minimumZ, maximumZ);
-
-
-        //Move1();
-        //Move2();
-    }
-
-    void Move1()
-    {
-        h_move = Input.GetAxisRaw("Horizontal");   // -1, 0, 1
-        v_move = Input.GetAxisRaw("Vertical");
-
-        movement.Set(h_move, 0, v_move);    // x,z ÀÌµ¿
-        Quaternion q = Quaternion.LookRotation(movement.normalized); q.x = 0; q.z = 0;  // yÃà °íÁ¤ 
-        _targetTransform.transform.localRotation = q;
-
-        //_targetTransform.transform.LookAt(movement);
-        movement = movement.normalized * movespeed * Time.deltaTime;
-        _targetTransform.transform.position += movement;
-    }
-
-    void Move2()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            UnityEngine.RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (true == (Physics.Raycast(ray.origin, ray.direction * 1000, out hit)))
-            {
-                print("Clicked on: " + hit.collider.gameObject.name);
-
-                // Å¬¸¯ÇÑ ÁöÁ¡ÀÇ x, z ÁÂÇ¥·Î Ä³¸¯ÅÍ ÀÌµ¿
-                clickTargetPos = new Vector3(hit.point.x, _targetTransform.position.y, hit.point.z);
-                _targetTransform.transform.LookAt(clickTargetPos);
-            }
-        }
-
-        Vector3 startPos = _targetTransform.transform.position;
-        Vector3 dirVector = (clickTargetPos - startPos).normalized;
-
-        if (Vector3.Distance(startPos, clickTargetPos) >= 0.01f)
-        {
-            _targetTransform.transform.position += dirVector * Time.deltaTime * movespeed;
-        }
-
-    }
-
     void LateUpdate()
     {
-
         if (!_targetTransform) return;
-
-        // target rotation 
-        //float currentAngle	= _cameraTransform.eulerAngles.y; //y angle
-        //float targetAngle 	= _targetTransform.eulerAngles.y; 
-        //currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref angleVelocity, angularSmoothTime, angularMaxSpeed);				
-        //Quaternion currentRotation = Quaternion.Euler (fPitch, currentAngle + fYaw, 0);
         Quaternion currentRotation = Quaternion.Euler(fPitch, fYaw, 0);
 
         // target position
         Vector3 targetPos = _targetTransform.position + targetOffset;
 
         // camera position
-        //_cameraTransform.position = targetPos + currentRotation * Vector3.back * fDistance; 
         fDistance_cur = Mathf.SmoothDamp(fDistance_cur, fDistance, ref fVelocity, fSmoothTime);
         _cameraTransform.position = targetPos + currentRotation * Vector3.back * fDistance_cur;
 
