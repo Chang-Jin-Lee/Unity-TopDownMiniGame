@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour, IAbility
@@ -10,9 +9,9 @@ public class Player : MonoBehaviour, IAbility
     //[SerializeField] private string abilityTemplatePath = "Player_Midori_Ability_Data";
     [SerializeField] public AbilityData abilityTemplate;
 
-    public Animator animator;
-    public GameObject CharacterModel;
-    public Weapon gunRef;
+    [FormerlySerializedAs("Weapon")] public Weapon gunRef;
+    [FormerlySerializedAs("CharacterModel")] public GameObject curCharacterModel;
+    [FormerlySerializedAs("Animation")] public Animator animatorController;
 
     // Weapon에게 전달할 destination Position
     private Vector3 mousePosition = Vector3.zero;
@@ -247,7 +246,7 @@ public class Player : MonoBehaviour, IAbility
         }
         else
         {
-            Instantiate(AttackFX, transform.position + CharacterModel.transform.forward * 2, transform.rotation);
+            Instantiate(AttackFX, transform.position + curCharacterModel.transform.forward * 2, transform.rotation);
         }
     }
 
@@ -255,7 +254,7 @@ public class Player : MonoBehaviour, IAbility
     {
         if (anim_cur == anim) return;
         anim_cur = anim;
-        animator.Play(anim_cur);
+        animatorController.Play(anim_cur);
 
         if (next != "") StartCoroutine(SetAnimationNext(next));
     }
@@ -263,7 +262,7 @@ public class Player : MonoBehaviour, IAbility
     IEnumerator SetAnimationNext(string anim)
     {
         yield return null;  // 애니메이션 이전 플레이 길이를 안가져오게 1프레임 기다리기 
-        float delay = animator.GetCurrentAnimatorClipInfo(0)[0].clip.length;    // 애니메이션 길이 가져와서 기다리게 하기
+        float delay = animatorController.GetCurrentAnimatorClipInfo(0)[0].clip.length;    // 애니메이션 길이 가져와서 기다리게 하기
         print(anim_cur);
         print(delay);
         yield return new WaitForSeconds(delay);
@@ -280,7 +279,7 @@ public class Player : MonoBehaviour, IAbility
             //print(hit.transform.gameObject.name);
             mousePosition = hit.point;
             Vector3 xzPosition = new Vector3(mousePosition.x, 0, mousePosition.z);
-            CharacterModel.transform.LookAt(xzPosition);   //특정 위치 바라보기
+            curCharacterModel.transform.LookAt(xzPosition);   //특정 위치 바라보기
         }
     }
 
@@ -319,7 +318,7 @@ public class Player : MonoBehaviour, IAbility
         {
             targetTransform.GetComponent<BoxCollider>().enabled = true;
             targetTransform.SetParent(null, false);
-            targetTransform.position = transform.position + CharacterModel.transform.forward + transform.up;
+            targetTransform.position = transform.position + curCharacterModel.transform.forward + transform.up;
             targetTransform.rotation = Quaternion.identity;
             //targetTransform.localPosition = transform.position + CharacterModel.transform.forward + transform.up * 2;
             //targetTransform.localRotation = new Quaternion(-0.707106829f, 0f, 0f, 0.707106829f);
