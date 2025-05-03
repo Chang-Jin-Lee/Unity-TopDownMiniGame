@@ -1,12 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Weapon : MonoBehaviour, IWeaponAbility
 {
     private Rigidbody rb;
-    [SerializeField] private Bullet bulletPrefab;
+    [SerializeField] private Bullet[] bulletPrefabs;
     [SerializeField] private GameObject bulletSpawnPoint;
     [SerializeField] private WeaponAbiliyData weaponAbiliyData;
 
@@ -17,23 +16,26 @@ public class Weapon : MonoBehaviour, IWeaponAbility
     void Start()
     {
         fireRate = weaponAbiliyData.fireRate;
-        bulletPrefab.SetBulletAbility(weaponAbiliyData);
+        foreach (var bulletPrefab in bulletPrefabs)
+        {
+            bulletPrefab.SetBulletAbility(weaponAbiliyData);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Player pl = other.GetComponent<Player>();
-        if (pl != null)
+        Player player = other.GetComponent<Player>();
+        if (player != null)
         {
             GetComponent<BoxCollider>().enabled = false;
-            StartCoroutine(DelayedEquip(pl));
+            StartCoroutine(DelayedEquip(player));
         }
     }
 
-    private IEnumerator DelayedEquip(Player pl)
+    private IEnumerator DelayedEquip(Player player)
     {
         yield return null; // 1프레임 기다리기
-        pl.EquipWeapon(gameObject);
+        player.EquipWeapon(gameObject);
         Destroy(gameObject);
     }
 
@@ -50,6 +52,7 @@ public class Weapon : MonoBehaviour, IWeaponAbility
         Quaternion correction = Quaternion.FromToRotation(-transform.up, dir);
         transform.rotation = correction * transform.rotation;
 
+        var bulletPrefab = bulletPrefabs[Random.Range(0, bulletPrefabs.Length)];
         Bullet spawnedBullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, bulletSpawnPoint.transform.rotation);
         spawnedBullet.SetBulletDirection(bulletSpawnPoint.transform.position, desPos);
     }
