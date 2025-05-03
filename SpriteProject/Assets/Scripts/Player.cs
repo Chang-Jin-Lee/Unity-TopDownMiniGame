@@ -12,6 +12,8 @@ public class Player : MonoBehaviour, IPlayerAbility
     [FormerlySerializedAs("Weapon")] public Weapon gunRef;
     [FormerlySerializedAs("CharacterModel")] public GameObject curCharacterModel;
     [FormerlySerializedAs("Animation")] public Animator animatorController;
+
+    public HealthBar healthBar;
     // About Animation
     public string anim_cur = "Idle";
     
@@ -20,6 +22,7 @@ public class Player : MonoBehaviour, IPlayerAbility
 
     // About Ability
     public float health = 100.0f;
+    public float maxHealth = 100.0f;
     public float moveSpeed = 5.0f;
     public float moveWalkSpeed = 5.0f;
     public float moveDashSpeed = 10.0f;
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour, IPlayerAbility
     public void TakeDamage(float damage)
     {
         health -= damage;
+        healthBar.SetHP(health, maxHealth);
         if (health <= 0)
         {
             Death();
@@ -74,6 +78,7 @@ public class Player : MonoBehaviour, IPlayerAbility
     {
         combatStart();
         SetAbilities();
+        healthBar = transform.GetComponentInChildren<HealthBar>();
     }
 
     public void SetAbilities()
@@ -82,6 +87,7 @@ public class Player : MonoBehaviour, IPlayerAbility
         moveWalkSpeed = playerAbilityTemplate.moveWalkSpeed;
         moveDashSpeed = playerAbilityTemplate.moveDashSpeed;
         health = playerAbilityTemplate.health;
+        maxHealth = playerAbilityTemplate.health;
     }
 
     void Update()

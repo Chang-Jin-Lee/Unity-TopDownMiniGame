@@ -56,6 +56,7 @@ public class Weapon : MonoBehaviour, IWeaponAbility
 
         var bulletPrefab = bulletPrefabs[Random.Range(0, bulletPrefabs.Length)];
         Bullet spawnedBullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, bulletSpawnPoint.transform.rotation);
+        spawnedBullet.SetBulletAbility(weaponAbiliyData);
         spawnedBullet.SetBulletDirection(bulletSpawnPoint.transform.position, desPos);
         
         GameObject AttackFX = Attack_RifleFXs[Random.Range(0, Attack_RifleFXs.Length)];
@@ -63,5 +64,4 @@ public class Weapon : MonoBehaviour, IWeaponAbility
         AttackFX.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // change its local scale in x y z format
         Instantiate(AttackFX, gunspawnPosition, transform.rotation);
     }
-
 }

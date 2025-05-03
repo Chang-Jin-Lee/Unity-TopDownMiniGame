@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206061b97b86a5e4f9ad5b2c4834f6d5, type: 3}
   m_Name: Weapon_HK33A2Ability
   m_EditorClassIdentifier: 
-  damage: 12
-  fireRate: 8
-  speed: 35
+  damage: 6
+  fireRate: 7
+  speed: 25
   range: 40

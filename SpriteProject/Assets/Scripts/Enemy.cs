@@ -12,8 +12,11 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     private NavMeshAgent agent;
     public GameState gameState;
     
+    public HealthBar healthBar;
+    
     // About Ability
     public float health = 100.0f;
+    public float maxHealth = 100.0f;
     public float moveSpeed = 5.0f;
     public float moveWalkSpeed = 5.0f;
     public float moveDashSpeed = 10.0f;
@@ -38,6 +41,7 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     {
         print(health);
         health -= damage;
+        healthBar.SetHP(health, maxHealth);
         if (health <= 0)
         {
             Death();
@@ -54,6 +58,7 @@ public class Enemy : MonoBehaviour, IPlayerAbility
         moveWalkSpeed = enemyAbilityTemplate.moveWalkSpeed;
         moveDashSpeed = enemyAbilityTemplate.moveDashSpeed;
         health = enemyAbilityTemplate.health;
+        maxHealth = enemyAbilityTemplate.health;
         agent.speed = moveSpeed;
     }
 
@@ -61,6 +66,7 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     {
         agent = GetComponent<NavMeshAgent>();
         SetAbilities();
+        healthBar = transform.GetComponentInChildren<HealthBar>();
     }
 
     private void FixedUpdate()

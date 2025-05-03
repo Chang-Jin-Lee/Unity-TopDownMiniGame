@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206061b97b86a5e4f9ad5b2c4834f6d5, type: 3}
   m_Name: Weapon_S3SG1Ability
   m_EditorClassIdentifier: 
-  damage: 8
+  damage: 4
   fireRate: 12
-  speed: 50
+  speed: 40
   range: 300

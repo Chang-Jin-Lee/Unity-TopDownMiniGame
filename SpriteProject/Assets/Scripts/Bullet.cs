@@ -61,6 +61,7 @@ public class Bullet : MonoBehaviour, IBulletAbility
         if (playerAbility != null)
         {
             playerAbility.TakeDamage(damage);
+            print(damage);
             Destroy(gameObject);
         }
         else if (other.transform.CompareTag("Ground"))
