@@ -30,6 +30,7 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     public void Death()
     {
         gameState.KillCount++;
+        gameState.EnemyCount--;
         Destroy(gameObject);
     }
 

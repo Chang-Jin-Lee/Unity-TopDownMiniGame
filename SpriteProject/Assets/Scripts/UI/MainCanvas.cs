@@ -19,6 +19,8 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     [SerializeField] private GameObject EndScene;
     [SerializeField] private GameObject OptionMenu;
 
+    [SerializeField] private TimeManager timeManager;
+
     [SerializeField] private GameState gameState;
     private TextMeshProUGUI RemainEnemyText;
     private TextMeshProUGUI RemainTimeText;
@@ -26,6 +28,9 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     
     [SerializeField]
     private Live2DStateGroup[] live2DGroups = new Live2DStateGroup[(int)eCharacterState.Max];
+
+    [SerializeField]
+    private Texture2D[] cursors = new Texture2D[(int)eCharacterState.Max];
 
     #region OnValidate()
 
@@ -60,6 +65,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         Initialize_OptionMenu();
         OnVisibleUI(eSceneState.MenuScene);
         ShowLive2D(gameState.curCharacterState, eLive2DState.Start);
+        UpdateCursor();
     }
 
     #region InitializeUI
@@ -160,10 +166,14 @@ public class MainCanvas : MonoSingleton<MainCanvas>
             case eSceneState.MenuScene:
                 Time.timeScale = 1f;
                 MenuScene.SetActive(true);
+                gameState.EnemyCount = 0;
+                gameState.KillCount = 0;
                 ShowLive2D(gameState.curCharacterState, eLive2DState.Start);
                 break;
             case eSceneState.PlayScene:
                 PlayScene.SetActive(true);
+                gameState.EnemyCount = 0;
+                gameState.KillCount = 0;
                 break;
             case eSceneState.EndScene:
                 Time.timeScale = 1f;
@@ -187,6 +197,18 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     {
         OnVisibleUI(state);
         SceneManager.LoadScene(GameState.GetSceneStateToString(state));
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬이 로드된 뒤에 실행되는 콜백
+        if (scene.name == "PlayScene")
+        {
+            timeManager.Initialize(); // 초기화
+        }
+
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 콜백 해제 (중복 방지)
     }
 
     void ShowOption()
@@ -224,6 +246,8 @@ public class MainCanvas : MonoSingleton<MainCanvas>
             default:
                 break;
         }
+
+        UpdateCursor();
     }
 
     void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)
@@ -240,5 +264,16 @@ public class MainCanvas : MonoSingleton<MainCanvas>
             }
         }
         live2DGroups[(int)characterState].live2DAnimations[(int)live2DState].SetActive(true);
+    }
+    
+    void UpdateCursor()
+    {
+        Texture2D cursorTex = cursors[(int)gameState.curCharacterState];
+        Vector2 hotspot = new Vector2(cursorTex.width / 2f, cursorTex.height / 2f);
+        if (cursorTex != null)
+        {
+            Cursor.SetCursor(cursorTex, hotspot, CursorMode.Auto);
+            Cursor.visible = true;
+        }
     }
 }
