@@ -58,6 +58,8 @@ public enum eLive2DState
 {
     Start,
     Idle,
+    Maid_Start,
+    Maid_Idle,
     Max
 }
 

@@ -22,9 +22,6 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     [SerializeField] private GameState gameState;
     private TextMeshProUGUI RemainEnemyText;
     private TextMeshProUGUI RemainTimeText;
-
-    [SerializeField] private GameObject MidoriLive2D;
-    [SerializeField] private GameObject MomoiLive2D;
     
     [SerializeField]
     private Live2DStateGroup[] live2DGroups = new Live2DStateGroup[(int)eCharacterState.Max];
@@ -127,12 +124,15 @@ public class MainCanvas : MonoSingleton<MainCanvas>
             case eSceneState.MenuScene:
                 Time.timeScale = 1f;
                 MenuScene.SetActive(true);
+                ShowLive2D(gameState.curCharacterState, eLive2DState.Start);
                 break;
             case eSceneState.PlayScene:
                 PlayScene.SetActive(true);
                 break;
             case eSceneState.EndScene:
+                Time.timeScale = 1f;
                 EndScene.SetActive(true);
+                ShowLive2D(gameState.curCharacterState, eLive2DState.Maid_Start);
                 break;
             default:
                 break;
