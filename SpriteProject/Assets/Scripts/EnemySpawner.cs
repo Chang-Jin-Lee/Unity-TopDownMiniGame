@@ -42,7 +42,6 @@ public class EnemySpawner : MonoBehaviour
                 obj.GetComponent<Enemy>().playerTransform = playerTransform;
                 enemies.Add(obj);
                 gameState.EnemyCount += i;
-                print(gameState.EnemyCount);
             }
         }
     }

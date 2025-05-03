@@ -22,6 +22,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     [SerializeField] private GameState gameState;
     private TextMeshProUGUI RemainEnemyText;
     private TextMeshProUGUI RemainTimeText;
+    private TextMeshProUGUI KillEnemyCountText;
     
     [SerializeField]
     private Live2DStateGroup[] live2DGroups = new Live2DStateGroup[(int)eCharacterState.Max];
@@ -97,6 +98,11 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     {
         Transform TitleButton_EndSceneObj = EndScene.transform.Find("TitleButton");
         TitleButton_EndSceneObj.GetComponent<Button>().onClick.AddListener(() => ChangeScene(eSceneState.MenuScene));
+        
+        Transform KillEnemyCountText_PlaySceneObj = EndScene.transform.Find("KillEnemyText");
+        KillEnemyCountText = KillEnemyCountText_PlaySceneObj.GetComponent<TextMeshProUGUI>();
+        KillEnemyCountText.SetText("죽인 적 수 : 0");
+        gameState.OnKillCount += SetKillCountUI;
     }
 
     void Initialize_OptionMenu()
@@ -110,8 +116,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         Transform EndButton_OptionObj = OptionMenu.transform.Find("EndButton");
         EndButton_OptionObj.GetComponent<Button>().onClick.AddListener(() => ChangeScene(eSceneState.EndScene));
     }
-    #endregion 
-
+    
     private void SetEnemyCountUI(int obj)
     {
         RemainEnemyText.text = $"{obj}";
@@ -121,6 +126,12 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     {
         RemainTimeText.text = $"{obj}";
     }
+    
+    private void SetKillCountUI(int obj)
+    {
+        KillEnemyCountText.text = $"죽인 적 수 : {obj}";
+    }
+    #endregion 
 
     GameObject GetSceneStateToGameObject(eSceneState state)
     {

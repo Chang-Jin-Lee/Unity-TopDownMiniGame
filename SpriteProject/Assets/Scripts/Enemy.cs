@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     [FormerlySerializedAs("enemyAbilityTemplate")] [SerializeField] public PlayerAbilityData enemyAbilityTemplate;
     public Transform playerTransform;
     private NavMeshAgent agent;
+    public GameState gameState;
     
     // About Ability
     public float health = 100.0f;
@@ -21,8 +22,14 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     public float MoveWalkSpeed => moveWalkSpeed;
     public float MoveDashSpeed => moveDashSpeed;
 
+    private void Awake()
+    {
+        gameState = GameState.Instance;
+    }
+
     public void Death()
     {
+        gameState.KillCount++;
         Destroy(gameObject);
     }
 

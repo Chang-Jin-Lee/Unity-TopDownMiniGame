@@ -70,6 +70,8 @@ public class GameState : MonoSingleton<GameState>
     public string PlayerState { get; private set; } = "Idle";
     public int RemainEnemyCount { get; private set; } = 0;
     public int RemainTimeCount{ get; private set; } = 0;
+    public int KillEnemyCount { get; private set; } = 0;
+
     public eSceneState curSceneState{ get; private set; } = eSceneState.MenuScene;
     public eCharacterState curCharacterState{ get; private set; } = eCharacterState.Midori;
 
@@ -92,6 +94,7 @@ public class GameState : MonoSingleton<GameState>
     #region DelegateFunctions
     public Action<int> OnEnemyCount;
     public Action<int> OnTimeCount;
+    public Action<int> OnKillCount;
     public int EnemyCount
     {
         get => RemainEnemyCount;
@@ -111,6 +114,17 @@ public class GameState : MonoSingleton<GameState>
             OnTimeCount?.Invoke(value);
         }
     }
+    
+    public int KillCount
+    {
+        get => KillEnemyCount;
+        set
+        {
+            KillEnemyCount = value;
+            OnKillCount?.Invoke(value);
+        }
+    }
+    
     #endregion
     
     public void AddScore(int amount)
@@ -130,6 +144,10 @@ public class GameState : MonoSingleton<GameState>
         RemainEnemyCount = newRemainEnemyCount;
     }
     
+    public void AddKillEnemyCount(int newKillEnemyCount)
+    {
+        KillEnemyCount = newKillEnemyCount;
+    }
     public void SetRemainTimeCount(int newRemainTimeCount)
     {
         RemainTimeCount = newRemainTimeCount;
