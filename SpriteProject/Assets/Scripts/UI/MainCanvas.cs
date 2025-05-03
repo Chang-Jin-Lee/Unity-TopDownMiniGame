@@ -25,7 +25,32 @@ public class MainCanvas : MonoSingleton<MainCanvas>
     
     [SerializeField]
     private Live2DStateGroup[] live2DGroups = new Live2DStateGroup[(int)eCharacterState.Max];
-    
+
+    #region OnValidate()
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        int targetSize = (int)eCharacterState.Max;
+
+        if (live2DGroups == null || live2DGroups.Length != targetSize)
+        {
+            Array.Resize(ref live2DGroups, targetSize);
+
+            // 배열 안의 null 요소 초기화
+            for (int i = 0; i < live2DGroups.Length; i++)
+            {
+                if (live2DGroups[i] == null)
+                    live2DGroups[i] = new Live2DStateGroup();
+            }
+
+            // 변경 감지를 위해 에디터에 알림
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+    }
+#endif
+
+    #endregion
     private void Start()
     {
         Initialize_MenuScene();
