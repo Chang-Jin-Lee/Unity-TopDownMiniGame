@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
-{
+{    
+    [FormerlySerializedAs("PlayerAbilityTemplate")] [SerializeField] public PlayerAbilityData[] playerAbilityTemplate = new PlayerAbilityData[(int)eCharacterState.Max];
     [SerializeField] private GameObject[] PlayerModel = new GameObject[(int)eCharacterState.Max];
     [SerializeField] private GameObject Player;
     [FormerlySerializedAs("gamestate")] [SerializeField] private GameState gameState;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
                 Quaternion.identity);
             Player.GetComponent<Player>().curCharacterModel = obj;
             Player.GetComponent<Player>().animatorController = obj.GetComponent<Animator>();
+            Player.GetComponent<Player>().playerAbilityTemplate = playerAbilityTemplate[(int)gameState.curCharacterState];
             obj.transform.SetParent(Player.transform);
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;

@@ -57,10 +57,10 @@ public class Bullet : MonoBehaviour, IBulletAbility
     }
     private void OnCollisionEnter(Collision other)
     {
-        IAbility ability = ComponentHelper.FindInterface<IAbility>(other.gameObject);
-        if (ability != null)
+        IPlayerAbility playerAbility = ComponentHelper.FindInterface<IPlayerAbility>(other.gameObject);
+        if (playerAbility != null)
         {
-            ability.TakeDamage(damage);
+            playerAbility.TakeDamage(damage);
             Destroy(gameObject);
         }
         else if (other.transform.CompareTag("Ground"))

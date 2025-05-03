@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public interface IWeaponAbility
 {
-    void Shoot(Vector3 desPos); // µµÂø À§Ä¡¸¦ Àü´ÞÇØ¾ßÇÔ
+    void Shoot(Vector3 desPos); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
 }
 
 public interface IBulletAbility
@@ -15,7 +15,7 @@ public interface IBulletAbility
     void SetBulletAbility(WeaponAbiliyData weaponAbiliyData);
     void SetBulletDirection(Vector3 _originPos, Vector3 _desPos);
 }
-public interface IAbility
+public interface IPlayerAbility
 {
     float Health { get; }
     float MoveWalkSpeed { get; }
