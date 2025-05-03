@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+public class PlayerController : MonoBehaviour
+{
+    [SerializeField] private GameObject[] PlayerModel = new GameObject[(int)eCharacterState.Max];
+    [SerializeField] private GameObject Player;
+    [FormerlySerializedAs("gamestate")] [SerializeField] private GameState gameState;
+    void Awake()
+    {
+        gameState = GameState.Instance;
+
+        if (PlayerModel.Length > 0 && Player != null)
+        {
+            GameObject obj = Instantiate(PlayerModel[(int)gameState.curCharacterState], Vector3.zero,
+                Quaternion.identity);
+            Player.GetComponent<Player>().curCharacterModel = obj;
+            Player.GetComponent<Player>().animatorController = obj.GetComponent<Animator>();
+            obj.transform.SetParent(Player.transform);
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localRotation = Quaternion.identity;
+        }
+    }
+}
