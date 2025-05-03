@@ -1,20 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
     public List<GameObject> enemies;
-    public GameObject enemyPrefab;
+    public List<GameObject> enemyPrefabs;
     public float range = 40.0f;
     public int repeatCount = 2;
     public int maxCount = 100;
+    
+    public Transform playerTransform;
 
     [SerializeField] private GameState gameState;
 
     private void Awake()
     {
-        gameState = GameObject.Find("GameState").GetComponent<GameState>();
+        gameState = GameState.Instance;
     }
     void Start()
     {
@@ -26,6 +31,7 @@ public class EnemySpawner : MonoBehaviour
     {
         if(enemies.Count < maxCount)
         {
+            GameObject enemyPrefab = enemyPrefabs[Random.Range(0,enemyPrefabs.Count)];
             for (int i = 0; i < repeatCount; i++)
             {
                 if (enemies.Count >= maxCount) return;
@@ -33,6 +39,7 @@ public class EnemySpawner : MonoBehaviour
                 Vector2 dir = Random.insideUnitCircle.normalized * len;
                 Vector3 randomDir = new Vector3(dir.x, 1, dir.y);
                 GameObject obj = Instantiate(enemyPrefab, randomDir, Quaternion.identity);
+                obj.GetComponent<Enemy>().playerTransform = playerTransform;
                 enemies.Add(obj);
                 gameState.EnemyCount += i;
                 print(gameState.EnemyCount);
@@ -42,7 +49,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-
+        
     }
 
     void OnDrawGizmos()

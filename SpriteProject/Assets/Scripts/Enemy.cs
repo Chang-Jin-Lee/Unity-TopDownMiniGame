@@ -1,10 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Serialization;
 
-public class Enemy : MonoBehaviour, IAbility
+public class Enemy : MonoBehaviour, IPlayerAbility
 {
-    [SerializeField] public AbilityData abilityTemplate;
+    [FormerlySerializedAs("enemyAbilityTemplate")] [SerializeField] public PlayerAbilityData enemyAbilityTemplate;
+    public Transform playerTransform;
+    private NavMeshAgent agent;
     
     // About Ability
     public float health = 100.0f;
@@ -38,14 +43,20 @@ public class Enemy : MonoBehaviour, IAbility
     
     public void SetAbilities()
     {
-        moveWalkSpeed = abilityTemplate.moveWalkSpeed;
-        moveDashSpeed = abilityTemplate.moveDashSpeed;
-        health = abilityTemplate.health;
+        moveWalkSpeed = enemyAbilityTemplate.moveWalkSpeed;
+        moveDashSpeed = enemyAbilityTemplate.moveDashSpeed;
+        health = enemyAbilityTemplate.health;
+        agent.speed = moveSpeed;
     }
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
         SetAbilities();
     }
 
+    private void FixedUpdate()
+    {
+        agent.SetDestination(playerTransform.position);
+    }
 }
