@@ -5,7 +5,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638808010196675004
+      ticks: 638809993260786596
     m_Hash: 1406902011
   m_LockFileStatus:
     m_FilePath: D:/Github/UnityGame/SpriteProject/Packages/packages-lock.json
@@ -13,7 +13,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638808010432815725
+      ticks: 638809993266754604
     m_Hash: 266852741
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
