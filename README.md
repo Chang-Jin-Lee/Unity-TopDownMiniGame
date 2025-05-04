@@ -129,7 +129,7 @@ public enum eLive2DState
 <div align="center">
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/c97549e1-f29e-45cb-95d5-4576f9ba02d0" alt="Midori_Title" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e19d84b8-eb0c-435e-9498-a98d501c67c4" alt="Midori_Title" width="400"/></td>
   </tr>
 </table>
 </div>
