@@ -45,7 +45,6 @@ public class MainCanvasEditor : Editor
         
         // 전체 cursors texture
         SerializedProperty cursors = serializedObject.FindProperty("cursors");
-        EditorGUILayout.PropertyField(cursors);
         EditorGUILayout.LabelField("cursors", EditorStyles.boldLabel);
 
         for (int i = 0; i < (int)eCharacterState.Max; i++)
