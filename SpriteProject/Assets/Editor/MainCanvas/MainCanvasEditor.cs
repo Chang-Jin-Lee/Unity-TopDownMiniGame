@@ -15,7 +15,7 @@ public class MainCanvasEditor : Editor
         while (prop.NextVisible(enterChildren))
         {
             if (prop.name == "live2DGroups") continue;
-            if (prop.name == "cursor") continue;
+            if (prop.name == "cursors") continue;
             EditorGUILayout.PropertyField(prop, true);
             enterChildren = false;
         }
