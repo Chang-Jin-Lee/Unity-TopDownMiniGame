@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
@@ -12,11 +9,8 @@ public class EnemySpawner : MonoBehaviour
     public float range = 40.0f;
     public int repeatCount = 2;
     public int maxCount = 100;
-    
     public Transform playerTransform;
-
     [SerializeField] private GameState gameState;
-
     private void Awake()
     {
         gameState = GameState.Instance;
@@ -24,9 +18,7 @@ public class EnemySpawner : MonoBehaviour
     void Start()
     {
         InvokeRepeating("SpawnEnemy", 2f, 1f);
-        //OnDrawGizmos();
     }
-
     private void SpawnEnemy()
     {
         if(enemies.Count < maxCount)
@@ -45,12 +37,6 @@ public class EnemySpawner : MonoBehaviour
             }
         }
     }
-
-    void Update()
-    {
-        
-    }
-
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

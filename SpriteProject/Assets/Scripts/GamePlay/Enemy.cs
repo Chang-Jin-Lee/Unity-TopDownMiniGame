@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -11,7 +8,6 @@ public class Enemy : MonoBehaviour, IPlayerAbility
     public Transform playerTransform;
     private NavMeshAgent agent;
     public GameState gameState;
-    
     public HealthBar healthBar;
     
     // About Ability
@@ -39,7 +35,6 @@ public class Enemy : MonoBehaviour, IPlayerAbility
 
     public void TakeDamage(float damage)
     {
-        print(health);
         health -= damage;
         healthBar.SetHP(health, maxHealth);
         if (health <= 0)

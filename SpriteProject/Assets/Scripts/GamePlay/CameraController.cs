@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -7,10 +5,9 @@ public class CameraController : MonoBehaviour
    //---------------------------------------------
     public Transform _cameraTransform;
     public Transform _targetTransform;
+    public Vector3 targetOffset = new Vector3(0, 1, 0);    // Player Offset
 
-    public Vector3 targetOffset = new Vector3(0, 1, 0);    //��ġ
-
-    public float fDistance = 15.0f;          //Editor �켱 ����
+    public float fDistance = 15.0f;          //Editor Dynamic Distance
     public float fPitch = 30.0f;
     public float fYaw = 0.0f;
     
@@ -19,10 +16,6 @@ public class CameraController : MonoBehaviour
     float fSmoothTime = 0.1F;   // smooth, smaller is faster.
 
     // about move
-    public float movespeed = 50.0f;
-    float h_move = 0;
-    float v_move = 0;
-    Vector3 movement;
     Vector3 clickTargetPos = new Vector3(0,0,0);
 
     //---------------------------------------------

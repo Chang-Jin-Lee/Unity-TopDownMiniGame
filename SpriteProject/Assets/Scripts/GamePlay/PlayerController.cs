@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,7 +6,7 @@ public class PlayerController : MonoBehaviour
     [FormerlySerializedAs("PlayerAbilityTemplate")] [SerializeField] public PlayerAbilityData[] playerAbilityTemplate = new PlayerAbilityData[(int)eCharacterState.Max];
     [SerializeField] private GameObject[] PlayerModel = new GameObject[(int)eCharacterState.Max];
     [SerializeField] private GameObject Player;
-    [FormerlySerializedAs("gamestate")] [SerializeField] private GameState gameState;
+    [FormerlySerializedAs("Gamestate")] [SerializeField] private GameState gameState;
     void Awake()
     {
         gameState = GameState.Instance;

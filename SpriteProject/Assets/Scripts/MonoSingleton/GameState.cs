@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
@@ -65,13 +63,10 @@ public enum eLive2DState
 
 public class GameState : MonoSingleton<GameState>
 {
-    public int Score { get; private set; } = 0;
-    public int Rank { get; private set; } = 0;
     public string PlayerState { get; private set; } = "Idle";
     public int RemainEnemyCount { get; private set; } = 0;
     public int RemainTimeCount{ get; private set; } = 0;
     public int KillEnemyCount { get; private set; } = 0;
-
     public eSceneState curSceneState{ get; private set; } = eSceneState.MenuScene;
     public eCharacterState curCharacterState{ get; private set; } = eCharacterState.Midori;
 
@@ -126,15 +121,7 @@ public class GameState : MonoSingleton<GameState>
     }
     
     #endregion
-    
-    public void AddScore(int amount)
-    {
-        Score += amount;
-    }
-    public void UpdateRank(int newRank)
-    {
-        Rank = newRank;
-    }
+    #region Setter
     public void SetPlayerState(string newState)
     {
         PlayerState = newState;
@@ -152,14 +139,13 @@ public class GameState : MonoSingleton<GameState>
     {
         RemainTimeCount = newRemainTimeCount;
     }
-
     public void SetGameState(eSceneState newState)
     {
         curSceneState = newState;
     }
-
     public void SetCharacterState(eCharacterState newState)
     {
         curCharacterState = newState;
     }
+    #endregion
 }

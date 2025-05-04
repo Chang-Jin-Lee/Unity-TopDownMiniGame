@@ -36,7 +36,7 @@ public class Weapon : MonoBehaviour, IWeaponAbility
 
     private IEnumerator DelayedEquip(Player player)
     {
-        yield return null; // 1ÇÁ·¹ÀÓ ±â´Ù¸®±â
+        yield return null; // í•œ í”„ë ˆìž„ ê¸°ë‹¤ë ¸ë‹¤ê°€ ì‹¤í–‰ 
         player.EquipWeapon(gameObject);
         Destroy(gameObject);
     }

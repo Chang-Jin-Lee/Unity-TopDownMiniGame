@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public interface IWeaponAbility
 {
-    void Shoot(Vector3 desPos); // ���� ��ġ�� �����ؾ���
+    void Shoot(Vector3 desPos); // 무기에서 무조건 구현해야하는 함수 
 }
 
 public interface IBulletAbility

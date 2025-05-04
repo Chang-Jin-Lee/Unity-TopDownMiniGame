@@ -2,13 +2,25 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
-
+enum eAnimationState
+{
+    idle_hand,
+    idle_rifle,
+    walk,
+    dash,
+    attack_hand,
+    attack_rifle,
+    hit,
+    die,
+};
+enum eCombatState
+{
+    unArmed,
+    rifle,
+}
 public class Player : MonoBehaviour, IPlayerAbility
 {
-    //[SerializeField] private string abilityTemplatePath = "Player_Midori_Ability_Data";
     [FormerlySerializedAs("PlayerAbilityTemplate")] [SerializeField] public PlayerAbilityData playerAbilityTemplate;
-
     [FormerlySerializedAs("Weapon")] public Weapon gunRef;
     [FormerlySerializedAs("CharacterModel")] public GameObject curCharacterModel;
     [FormerlySerializedAs("Animation")] public Animator animatorController;
@@ -33,12 +45,30 @@ public class Player : MonoBehaviour, IPlayerAbility
 
     // About Weapon
     private float lastFireTime = 0f; // 마지막 발사 시각 저장
-
+    
+    /* About Combat
+     */
+    eAnimationState state_cur;
+    eCombatState combat_state_cur;
+    void Start()
+    {
+        CombatStart();
+        SetAbilities();
+        healthBar = transform.GetComponentInChildren<HealthBar>();
+    }
+    void Update()
+    {
+        Input_Update();
+        AdjustState();
+    }
+    private void FixedUpdate()
+    {
+        RayCastMousePosition();
+    }
     public void Death()
     {
         Destroy(gameObject);
     }
-
     public void TakeDamage(float damage)
     {
         health -= damage;
@@ -53,52 +83,12 @@ public class Player : MonoBehaviour, IPlayerAbility
         health += amount;
     }
 
-    enum eAnimationState
-    {
-        idle_hand,
-        idle_rifle,
-        walk,
-        dash,
-        attack_hand,
-        attack_rifle,
-        hit,
-        die,
-    };
-    eAnimationState state_cur;
-
-    /* About Combat 
-     */
-    enum eCombatState
-    {
-        unArmed,
-        rifle,
-    }
-    eCombatState combat_state_cur;
-    void Start()
-    {
-        combatStart();
-        SetAbilities();
-        healthBar = transform.GetComponentInChildren<HealthBar>();
-    }
-
     public void SetAbilities()
     {
-        //abilityTemplate = Resources.Load<AbilityData>(abilityTemplatePath);
         moveWalkSpeed = playerAbilityTemplate.moveWalkSpeed;
         moveDashSpeed = playerAbilityTemplate.moveDashSpeed;
         health = playerAbilityTemplate.health;
         maxHealth = playerAbilityTemplate.health;
-    }
-
-    void Update()
-    {
-        Input_Update();
-        AdjustState();
-    }
-
-    private void FixedUpdate()
-    {
-        RayCastMousePosition();
     }
 
     void Input_Update()
@@ -113,7 +103,6 @@ public class Player : MonoBehaviour, IPlayerAbility
         {
             DetachWeapon();
         }
-
         if (Input.GetKey(KeyCode.W) ||
          Input.GetKey(KeyCode.A) ||
          Input.GetKey(KeyCode.S) ||
@@ -177,7 +166,6 @@ public class Player : MonoBehaviour, IPlayerAbility
             case eCombatState.rifle:
                 return eAnimationState.attack_rifle;
         }
-
         return eAnimationState.attack_hand;
     }
 
@@ -236,8 +224,6 @@ public class Player : MonoBehaviour, IPlayerAbility
             gunRef.Shoot(mousePosition);
             lastFireTime = Time.time;
         }
-
-        //Debug.DrawLine(gunRef.transform.position, mousePosition, Color.red);
     }
 
     void SetAnimation(string anim, string next = "")
@@ -253,8 +239,6 @@ public class Player : MonoBehaviour, IPlayerAbility
     {
         yield return null;  // 애니메이션 이전 플레이 길이를 안가져오게 1프레임 기다리기 
         float delay = animatorController.GetCurrentAnimatorClipInfo(0)[0].clip.length;    // 애니메이션 길이 가져와서 기다리게 하기
-        print(anim_cur);
-        print(delay);
         yield return new WaitForSeconds(delay);
         SetAnimation(anim);
     }
@@ -266,7 +250,6 @@ public class Player : MonoBehaviour, IPlayerAbility
         int layerMask = ~(1 << LayerMask.NameToLayer("Bullet")); // Bullet 레이어만 제외
         if (Physics.Raycast(ray.origin, ray.direction, out hit, 500.0f, layerMask))
         {
-            //print(hit.transform.gameObject.name);
             mousePosition = hit.point;
             Vector3 xzPosition = new Vector3(mousePosition.x, 0, mousePosition.z);
             curCharacterModel.transform.LookAt(xzPosition);   //특정 위치 바라보기
@@ -281,7 +264,6 @@ public class Player : MonoBehaviour, IPlayerAbility
         obj.GetComponent<BoxCollider>().enabled = false;
         gunRef = obj.GetComponent<Weapon>();
         StartCoroutine(DelayedEquip(obj));
-        //print("Weapon Spawn");
     }
     private IEnumerator DelayedEquip(GameObject obj)
     {
@@ -310,9 +292,6 @@ public class Player : MonoBehaviour, IPlayerAbility
             targetTransform.SetParent(null, false);
             targetTransform.position = transform.position + curCharacterModel.transform.forward + transform.up;
             targetTransform.rotation = Quaternion.identity;
-            //targetTransform.localPosition = transform.position + CharacterModel.transform.forward + transform.up * 2;
-            //targetTransform.localRotation = new Quaternion(-0.707106829f, 0f, 0f, 0.707106829f);
-            //SetCollisionEnableNext(targetTransform);
         }
     }
 
@@ -324,7 +303,7 @@ public class Player : MonoBehaviour, IPlayerAbility
         targetTransform.GetComponent<BoxCollider>().enabled = true;
     }
 
-    void combatStart()
+    void CombatStart()
     {
         combat_state_cur = eCombatState.unArmed;
     }

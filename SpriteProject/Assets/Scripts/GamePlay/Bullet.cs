@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour, IBulletAbility
@@ -33,12 +29,7 @@ public class Bullet : MonoBehaviour, IBulletAbility
         transform.rotation = Quaternion.LookRotation(direction);
         bMovable = true;
     }
-
-    //private void Awake()
-    //{
-    //    direction = transform.forward;
-    //}
-
+    
     void FixedUpdate()
     {
         Debug.DrawLine(originalPos, originalPos + direction * 5f, Color.blue);
@@ -61,7 +52,6 @@ public class Bullet : MonoBehaviour, IBulletAbility
         if (playerAbility != null)
         {
             playerAbility.TakeDamage(damage);
-            print(damage);
             Destroy(gameObject);
         }
         else if (other.transform.CompareTag("Ground"))

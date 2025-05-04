@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -154,7 +152,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         }
     }
 
-    void OnVisibleUI(eSceneState state)
+    void OnVisibleUI(eSceneState state) // UI 전환 
     {
         MenuScene.SetActive(false);
         PlayScene.SetActive(false);
@@ -193,14 +191,14 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         scoreText.text = value.ToString();
     }
 
-    public void ChangeScene(eSceneState state)
+    public void ChangeScene(eSceneState state)  // 씬 전환 
     {
         OnVisibleUI(state);
         SceneManager.LoadScene(GameState.GetSceneStateToString(state));
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
     
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) // 씬이 로드된 다음에 실행 
     {
         // 씬이 로드된 뒤에 실행되는 콜백
         if (scene.name == "PlayScene")
@@ -227,11 +225,10 @@ public class MainCanvas : MonoSingleton<MainCanvas>
 
     void ShutDown()
     {
-        print("Quit");
         Application.Quit();
     }
 
-    void CharacterSelected(eCharacterState newState)
+    void CharacterSelected(eCharacterState newState)    // 캐릭터 선택했을 때 실행될 함수 
     {
         switch (newState)
         {
@@ -250,7 +247,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         UpdateCursor();
     }
 
-    void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)
+    void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)   // 캐릭터, AnimationState에 맞는 Live2D 재생 
     {
         foreach (var live2DGroup in live2DGroups)
         {
@@ -266,7 +263,7 @@ public class MainCanvas : MonoSingleton<MainCanvas>
         live2DGroups[(int)characterState].live2DAnimations[(int)live2DState].SetActive(true);
     }
     
-    void UpdateCursor()
+    void UpdateCursor() // 커서 이미지를 업데이트 
     {
         Texture2D cursorTex = cursors[(int)gameState.curCharacterState];
         Vector2 hotspot = new Vector2(cursorTex.width / 2f, cursorTex.height / 2f);
