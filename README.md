@@ -136,12 +136,11 @@ public enum eLive2DState
       </td>
       <td align="center" style="padding: 10px;">
         <div style="margin-bottom: 8px; font-weight: bold; font-size: 16px;"> CustomEditor 적용 후</div>
-        <img src="https://github.com/user-attachments/assets/e19d84b8-eb0c-435e-9498-a98d501c67c4" alt="After" width="400"/>
+        <img src="https://github.com/user-attachments/assets/b103e3ad-af71-446a-9a90-00b58451166b" alt="After" width="400"/>
       </td>
     </tr>
   </table>
 </div>
-
 
 ### 🎯 인터페이스 구조
 
