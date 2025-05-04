@@ -126,13 +126,22 @@ public enum eLive2DState
 }
 ```
 
+
 <div align="center">
-<table>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/e19d84b8-eb0c-435e-9498-a98d501c67c4" alt="Midori_Title" width="400"/></td>
-  </tr>
-</table>
+  <table>
+    <tr>
+      <td align="center" style="padding: 10px;">
+        <div style="margin-bottom: 8px; font-weight: bold; font-size: 16px;"> CustomEditor 적용 전</div>
+        <img src="https://github.com/user-attachments/assets/dfb0ac5c-3ad9-41a7-8051-1db4b9ea28b9" alt="Before" width="400"/>
+      </td>
+      <td align="center" style="padding: 10px;">
+        <div style="margin-bottom: 8px; font-weight: bold; font-size: 16px;"> CustomEditor 적용 후</div>
+        <img src="https://github.com/user-attachments/assets/e19d84b8-eb0c-435e-9498-a98d501c67c4" alt="After" width="400"/>
+      </td>
+    </tr>
+  </table>
 </div>
+
 
 ### 🎯 인터페이스 구조
 
