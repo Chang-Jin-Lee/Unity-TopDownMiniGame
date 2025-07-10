@@ -25,7 +25,7 @@ Unity 기반의 탑다운 슈팅 게임입니다.
 
 * 프로젝트 인원 : 1인
 
-## 🔍 플레이 장면
+## 플레이 장면
 
 <div align="center">
 <table>
@@ -37,9 +37,9 @@ Unity 기반의 탑다운 슈팅 게임입니다.
 
 ---
 
-## 🎮 주요 기능
+## 소개
 
-### ✅ 캐릭터 선택 및 커서 이미지 변경
+###  캐릭터 선택 및 커서 이미지 변경
 
 * **Midori / Momoi 캐릭터 선택 가능**
 * 각 캐릭터에 따라 Live2D 애니메이션 및 마우스 커서 이미지 변경
@@ -56,7 +56,7 @@ void CharacterSelected(eCharacterState newState)
 
 ---
 
-### ✅ Live2D 애니메이션 구조
+### Live2D 애니메이션 구조
 
 * 각 캐릭터 상태 범위에 따라 `live2DAnimations` GameObject 배열에 등록
 * 인스펙터에서 `MainCanvasEditor`를 통해 커스터마이징 가능
@@ -75,7 +75,7 @@ void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)
 
 ---
 
-### ✅ 플레이 UI 및 옵션 메뉴
+### 플레이 UI 및 옵션 메뉴
 
 * `TimeManager`, `GameState`를 통해 남은 시간, 적 수, 킬 수를 UI에 실시간 표시
 * `OptionMenu`는 `Time.timeScale = 0`을 통해 게임 일시 정지
@@ -91,9 +91,9 @@ void ShowLive2D(eCharacterState characterState, eLive2DState live2DState)
 
 ---
 
-## 💡 새로 알게 된 점 정리
+## 새로 알게 된 점 정리
 
-### 🔧 커스텀 에디터
+### 커스텀 에디터
 
 * `[CustomPropertyDrawer(typeof(ClassName))]`를 통해 클래스 프로퍼티 배열의 인덱스를 커스텀 이름으로 직렬화
 * `[System.Serializable]`, `PropertyDrawer`를 통해 배열 내부 요소를 enum의 이름과 함께 출력
@@ -142,7 +142,7 @@ public enum eLive2DState
   </table>
 </div>
 
-### 🎯 인터페이스 구조
+### 인터페이스 구조
 
 * `IPlayerAbility`, `IWeaponAbility`, `IBulletAbility` 등으로 역할 분리
 * 필요한 Ability를 인터페이스로 상속받아 사용
@@ -158,7 +158,7 @@ public static T FindInterface<T>(GameObject target) where T : class
 }
 ```
 
-### 🧠 게임 상태 관리
+### 게임 상태 관리
 
 * 전역 싱글톤 `public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour`를 통해 점수, 시간, 캐릭터, 씬 상태를 통합 관리
 * `Action<T>` 델리게이트를 활용해 UI는 자동 업데이트
